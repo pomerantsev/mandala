@@ -5,8 +5,8 @@ const scale = window.devicePixelRatio;
 
 const clientRect = canvas.getBoundingClientRect();
 
-canvas.width = clientRect.width * scale;
-canvas.height = clientRect.width * scale;
+const width = canvas.width = clientRect.width * scale;
+const height = canvas.height = clientRect.width * scale;
 
 console.log(canvas.width, canvas.height);
 
@@ -19,6 +19,16 @@ context.fillRect(0, 0, canvas.width, canvas.height);
 let lastPoint = null;
 let currentPoint = null;
 
+const getRadius = (x, y) => {
+  return Math.sqrt(Math.pow(x - width / 2, 2) + Math.pow(y - height / 2, 2));
+};
+
+const getAngle = (x, y) => {
+  return Math.atan2(y - height / 2, x - width / 2);
+};
+
+const repetitions = 10;
+
 function draw() {
   if (lastPoint && currentPoint) {
     context.strokeStyle = 'white';
@@ -26,21 +36,39 @@ function draw() {
     context.lineCap = 'round';
     context.beginPath();
 
-    context.moveTo(lastPoint.x, lastPoint.y);
-    context.lineTo(currentPoint.x, currentPoint.y);
-    context.stroke();
+    console.log(getRadius(currentPoint.x, currentPoint.y));
 
-    context.moveTo(canvas.width - lastPoint.y, lastPoint.x);
-    context.lineTo(canvas.width - currentPoint.y, currentPoint.x);
-    context.stroke();
+    const lastRadius = getRadius(lastPoint.x, lastPoint.y);
+    const lastAngle = getAngle(lastPoint.x, lastPoint.y);
+    const currentRadius = getRadius(currentPoint.x, currentPoint.y);
+    const currentAngle = getAngle(currentPoint.x, currentPoint.y);
 
-    context.moveTo(canvas.width - lastPoint.x, canvas.width - lastPoint.y);
-    context.lineTo(canvas.width - currentPoint.x, canvas.width - currentPoint.y);
-    context.stroke();
+    for (let i = 0; i < repetitions; i++) {
+      context.moveTo(
+        width / 2 + lastRadius * Math.cos(lastAngle + 2 * Math.PI / repetitions * i),
+        height / 2 + lastRadius * Math.sin(lastAngle + 2 * Math.PI / repetitions * i)
+      );
+      context.lineTo(
+        width / 2 + currentRadius * Math.cos(currentAngle + 2 * Math.PI / repetitions * i),
+        height / 2 + currentRadius * Math.sin(currentAngle + 2 * Math.PI / repetitions * i)
+      );
+      context.stroke();
+    }
+    // context.moveTo(lastPoint.x, lastPoint.y);
+    // context.lineTo(currentPoint.x, currentPoint.y);
+    // context.stroke();
 
-    context.moveTo(lastPoint.y, canvas.width - lastPoint.x);
-    context.lineTo(currentPoint.y, canvas.width - currentPoint.x);
-    context.stroke();
+    // context.moveTo(canvas.width - lastPoint.y, lastPoint.x);
+    // context.lineTo(canvas.width - currentPoint.y, currentPoint.x);
+    // context.stroke();
+
+    // context.moveTo(canvas.width - lastPoint.x, canvas.width - lastPoint.y);
+    // context.lineTo(canvas.width - currentPoint.x, canvas.width - currentPoint.y);
+    // context.stroke();
+
+    // context.moveTo(lastPoint.y, canvas.width - lastPoint.x);
+    // context.lineTo(currentPoint.y, canvas.width - currentPoint.x);
+    // context.stroke();
 
     // context.arc(canvas.width - circle.y, circle.x, circle.radius, 0, Math.PI * 2);
     // context.fill();
