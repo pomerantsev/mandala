@@ -1,0 +1,18 @@
+# .github/workflows/hello-comments.yml
+name: Hello on @hello
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: pomerantsev/hello-world-github-action@v1
+        with:
+          message: "👋 Hello from the Action (mandala)!"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
